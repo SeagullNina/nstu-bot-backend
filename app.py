@@ -10,9 +10,6 @@ from sklearn.svm import LinearSVC
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from IPython import get_ipython
-import telegram
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from flask import jsonify
 
 BOT_CONFIG = {
@@ -182,25 +179,6 @@ def bot(replica):
     answer = get_stub()
     stats['stubs'] += 1
     return answer
-
-def start(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /start is issued."""
-    update.message.reply_text('Здравствуйте! Я Коннор. Прислан Киберлайф')
-
-
-def help_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
-
-
-def run_bot(update: Update, context: CallbackContext) -> None:
-    response = bot(update.message.text)
-    update.message.reply_text(response)
-    print(update.message.text)
-    print(response)
-    print(stats)
-    print()
-
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
