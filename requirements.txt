@@ -11,3 +11,4 @@ six==1.15.0
 virtualenv==20.4.0
 Werkzeug==1.0.1
 flask-cors==3.0.10
+nltk==3.5.0
