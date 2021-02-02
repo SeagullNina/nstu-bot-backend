@@ -13,4 +13,4 @@ Werkzeug==1.0.1
 flask-cors==3.0.10
 nltk==3.5.0
 scikit-learn==0.24.1
-IPython=7.20.0
+IPython==7.20.0
