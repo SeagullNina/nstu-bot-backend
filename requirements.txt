@@ -14,3 +14,4 @@ flask-cors==3.0.10
 nltk==3.5.0
 scikit-learn==0.24.1
 IPython==7.16.1
+python-telegram-bot==5.0.0
