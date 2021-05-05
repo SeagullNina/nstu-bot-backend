@@ -12,6 +12,15 @@ from sklearn.linear_model import LogisticRegression
 from IPython import get_ipython
 from flask import jsonify
 
+bot_state = {
+    "next_step": None,
+    "variables": {
+        "result": 0
+    },
+    "saveReplicaToVariable": None,
+}
+
+
 BOT_CONFIG = {
     'intents': {
         'hello': {
@@ -50,25 +59,65 @@ BOT_CONFIG = {
             'examples': ['Номер деканата АВТФ', 'Как позвонить в деканат АВТФ'],
             'responses': ['Номер деканата АВТФ - 8 383 346-11-53']
         },
-        'minBallsRussian': {
-            'examples': ['Минимальные баллы русский язык', 'Минимальные баллы по русскому языку'],
-            'responses': ['Минимальный балл по русскому языку в 2021 году - 40 баллов']
+        'numbeDekanatAvtf': {
+            'examples': ['Номер', 'Как позвонить в деканат АВТФ'],
+            'responses': ['Номе деканата АВТФ - 8 383 346-11-53']
         },
-        'minBallsMath': {
-            'examples': ['Минимальные баллы математика', 'Минимальные баллы по математике'],
-            'responses': ['Минимальный балл по математике в 2021 году - 39 баллов']
+        'firstQuestion': {
+            'examples': ['1', 'Тест'],
+            'responses': ['Если бы на свете существовали только две профессии, какую работу вы бы предпочли из двух? 1. Ухаживать за животными. 2. Обслуживать машины, приборы.'],
+            'next_step': 'testSummary',
+            "save_variable": 'firstQuestion',
         },
-        'minBallsIKT': {
-            'examples': ['Минимальные баллы информатика', 'Минимальные баллы по информатике'],
-            'responses': ['Минимальный балл по информатике в 2021 году - 44 балла']
+        'secondQuestion': {
+            'examples': ['1', 'Тест'],
+            'responses': ['Какую работу вы предпочтёте? 1. Помогать больным людям. 2. Составлять таблицы, схемы, программы вычислительных машин.'],
+            'next_step': 'thirdQuestion',
+            "save_variable": 'secondQuestion',
         },
-        'minBallsPhysics': {
-            'examples': ['Минимальные баллы физика', 'Минимальные баллы по физике'],
-            'responses': ['Минимальный балл по физике в 2021 году - 39 баллов']
+        'thirdQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Следить за качеством книжных иллюстраций, плакатов, художественных открыток. 2. Следить за состоянием, развитием растений.'],
+            'next_step': 'fourthQuestion',
+            "save_variable": 'thirdQuestion',
         },
-        'minBallsChemistry': {
-            'examples': ['Минимальные баллы химия', 'Минимальные баллы по химии'],
-            'responses': ['Минимальный балл по химии в 2021 году - 39 баллов']
+        'fourthQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Обрабатывать материалы (дерево, ткань, металл, пластмассу) 2. Доводить товары до потребителя (рекламировать, продавать)'],
+            'next_step': 'fifthQuestion',
+            "save_variable": 'fourthQuestion',
+        },
+        'fifthQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Обсуждать научно популярные книги, статьи 2. Обсуждать художественные книги'],
+            'next_step': 'sixthQuestion',
+            "save_variable": 'fifthQuestion',
+        },
+        'sixthQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Выращивать молодняк животных какой-либо породы 2. Тренировать сверстников (или младших) в выполнении каких-либо действий (трудовых, учебных, спортивных)'],
+            'next_step': 'seventhQuestion',
+            "save_variable": 'sixthQuestion',
+        },
+        'seventhQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Копировать рисунки, изображения, настраивать музыкальные инструменты 2. Управлять каким-либо грузовым, подъемным транспортным средством (подъемным краном, трактором, тепловозом и др.)'],
+            'next_step': 'eighthQuestion',
+            "save_variable": 'seventhQuestion',
+        },
+        'eighthQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Сообщать, разъяснять людям нужные им сведения (в справочном бюро, на экскурсии и т.п.) 2. Художественно оформлять выставки, витрины, участвовать в подготовке пьес, концертов'],
+            'next_step': 'ninethQuestion',
+            "save_variable": 'eightQuestion',
+        },
+        'ninethQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Ремонтировать изделия, вещи (одежду, технику), жилище 2. Искать и исправлять ошибки в текстах, таблицах, рисунках'],
+            'next_step': 'tenthQuestion',
+            "save_variable": 'ninethQuestion',
+        },
+        'tenthQuestion': {
+            'responses': ['Какую работу вы предпочтёте? 1. Лечить животных 2. Выполнять вычисления, расчеты'],
+            'next_step': 'testSummary',
+            "save_variable": 'tenthQuestion',
+        },
+        'testSummary': {
+            "get_variables": ["resultText"],
+            "responses": ["{resultText}"],
         }
         },
     'failure_phrases': [
@@ -77,37 +126,51 @@ BOT_CONFIG = {
     ]
 }
 
-texts = []
-intent_names = []
-
-for intent, intent_data in BOT_CONFIG['intents'].items():
-    for example in intent_data['examples']:
-        texts.append(example)
-        intent_names.append(intent)
-
-
-vectorizer = TfidfVectorizer(ngram_range=(2, 4), analyzer='char')
-X = vectorizer.fit_transform(texts)
-clf = LinearSVC()
-clf.fit(X, intent_names)
-
+def clear_text(text):
+    text = text.lower()
+    text = "".join(char for char in text if char in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя -')
+    return text
 
 def classify_intent(replica):
-    intent = clf.predict(vectorizer.transform([replica]))[0]
+    replica = clear_text(replica)
 
-    examples = BOT_CONFIG['intents'][intent]['examples']
-    for example in examples:
-        example = clear_text(example)
-        if len(example) > 0:
-            if abs(len(example) - len(replica)) / len(example) < 0.7:
-                distance = nltk.edit_distance(replica, example)
-                if len(example) and distance / len(example) < 0.7:
-                    return intent
+    for intent, intent_data in BOT_CONFIG['intents'].items():
+        if 'examples' not in intent_data:
+            continue
 
+        for example in intent_data['examples']:
+            example = clear_text(example)
+
+            distance = nltk.edit_distance(replica, example)
+
+            if (len(example) != 0 and distance / len(example)) < 0.3:
+                return intent
 
 def get_answer_by_intent(intent):
-    if intent in BOT_CONFIG['intents']:
-        responses = BOT_CONFIG['intents'][intent]['responses']
+    if intent in BOT_CONFIG["intents"]:
+        responses = BOT_CONFIG["intents"][intent]["responses"]
+
+        if "next_step" in BOT_CONFIG["intents"][intent]:
+            bot_state["next_step"] = BOT_CONFIG["intents"][intent]["next_step"]
+
+        # Если в кейсе есть запрос на сохранение(save_variable) записываем имя переменной что бы
+        # сохранить след реплику в хранилище
+        if 'save_variable' in BOT_CONFIG["intents"][intent]:
+            bot_state["saveReplicaToVariable"] = BOT_CONFIG["intents"][intent]["save_variable"]
+            global result
+            result = BOT_CONFIG["intents"][intent]["save_variable"]
+
+        # Если в кейсе есть запрос на получение(get_variables), проходимся по строке и заменяем в строке
+        # плейсхолдеры на значение переменных
+        if 'get_variables' in BOT_CONFIG["intents"][intent]:
+            response = random.choice(responses)
+
+            for variable in BOT_CONFIG["intents"][intent]["get_variables"]:
+                response = response.replace("{" + variable + "}", bot_state["variables"][variable])
+
+
+            return response
+
         return random.choice(responses)
 
 
@@ -177,35 +240,55 @@ def generate_answer(replica):
 
 
 def get_stub():
-    failure_phrases = BOT_CONFIG['failure_phrases']
+    failure_phrases = BOT_CONFIG["failure_phrases"]
     return random.choice(failure_phrases)
 
-
-stats = {'intents': 0, 'generative': 0, 'stubs': 0}
-
+def summator(ball):
+    ball += ball
+    return ball
 
 def bot(replica):
-    # NLU
+
+    global result
+    result = replica
+    if bot_state["saveReplicaToVariable"] != None:
+        # Сохраняем переменную
+        var_name = bot_state["saveReplicaToVariable"]
+        bot_state["variables"][var_name] = replica
+        bot_state["variables"]["result"] = summator(bot_state["variables"]["result"])
+        if bot_state["variables"]["result"] < 5:
+            bot_state["variables"]["resultText"] = "Вы машина"
+        if bot_state["variables"]["result"] >= 5:
+            bot_state["variables"]["resultText"] = "Вы пес"
+
+        bot_state["saveReplicaToVariable"] = None
+
+        # Загружаем след шаг если он есть
+    if bot_state["next_step"] != None:
+        intent = bot_state["next_step"]
+        # очищаем next_step чтобы не попасть в цикличность
+        bot_state["next_step"] = None
+        return get_answer_by_intent(intent)
+
+        # NLU
     intent = classify_intent(replica)
 
     # Получение ответа
 
-    # правила
+    # Правила
     if intent:
         answer = get_answer_by_intent(intent)
+
         if answer:
-            stats['intents'] += 1
             return answer
 
     # генеративная модель
     answer = generate_answer(replica)
     if answer:
-        stats['generative'] += 1
         return answer
 
     # заглушка
     answer = get_stub()
-    stats['stubs'] += 1
     return answer
 
 app = Flask(__name__)
