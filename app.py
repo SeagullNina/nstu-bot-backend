@@ -292,9 +292,9 @@ def get_answer_by_intent(intent):
         # плейсхолдеры на значение переменных
         if 'get_variables' in BOT_CONFIG["intents"][intent]:
 
-            #file = open("file.txt", "w")
-            #file.write('0')
-            #file.close()
+            file = open("file.txt", "w")
+            file.write('0')
+            file.close()
 
             response = random.choice(responses)
 
