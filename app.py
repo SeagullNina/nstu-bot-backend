@@ -83,6 +83,23 @@ def faculty(fac):
     return res.replace("профиль:", "").replace(")", "").replace("(", "").replace("(профили:", "").replace(
         "специализация:", "")
 
+def direction(dir):
+    res = ""
+    for data in nstu_data_json:
+        if data['OKSO_KEY'] == dir:
+            res += 'Направление: ' + str(data['OKSO_KEY']) + " " + str(data['SPEC_NAME']) + '.'
+            res += ' Факультет: ' + str(data['FACULTET']) + '.'
+            res += ' Форма обучения: ' + str((data['TRAINING_FORM']).split(',')) + '.'
+            res += ' Количество бюджетных мест: ' + str(data['B_MEST']) + '.'
+            res += ' Количество контрактных мест: ' + str(data['K_MEST']) + '.'
+            res += ' Проходной балл 2020 на бюджет: ' + str(data['MIN_B']) + '.'
+            res += ' Проходной балл 2020 на контракт: ' + str(data['MIN_K']) + '.'
+            if len(data['discs']) == 4:
+                res += 'Экзамены: ' + str(data['discs'][0]['NAME']) + ', ' + str(data['discs'][1]['NAME']) + ', ' + str(data['discs'][2]['NAME']) + ' ИЛИ ' + str(data['discs'][3]['NAME'])
+            else:
+                if len(data['discs']) == 3:
+                    res += 'Экзамены: ' + str(data['discs'][0]['NAME']) + ', ' + str(data['discs'][1]['NAME']) + ', ' + str(data['discs'][2]['NAME'])
+    return res
 
 bot_state = {
     "next_step": None,
@@ -195,6 +212,226 @@ BOT_CONFIG = {
             'examples': ['ФТФ'],
             'responses': [f"{faculty('ФТФ')}"]
         },
+        '09.03.01': {
+            'examples': ['Информатика и вычислительная техника'],
+            'responses': [f"{direction('09.03.01')}"]
+        },
+        '09.03.02': {
+            'examples': ['Информационные системы и технологии'],
+            'responses': [f"{direction('09.03.02')}"]
+        },
+        '09.03.03': {
+            'examples': ['Прикладная информатика'],
+            'responses': [f"{direction('09.03.03')}"]
+        },
+        '09.03.04': {
+            'examples': ['Программная инженерия'],
+            'responses': [f"{direction('09.03.04')}"]
+        },
+        '10.03.01': {
+            'examples': ['Информационная безопасность'],
+            'responses': [f"{direction('10.03.01')}"]
+        },
+        '10.05.03': {
+            'examples': ['Информационная безопасноcть автоматизированных систем'],
+            'responses': [f"{direction('10.05.03')}"]
+        },
+        '12.03.01': {
+            'examples': ['Приборостроение'],
+            'responses': [f"{direction('12.03.01')}"]
+        },
+        '12.03.04': {
+            'examples': ['Биотехнические системы и технологии'],
+            'responses': [f"{direction('12.03.04')}"]
+        },
+        '27.03.04': {
+            'examples': ['Управление в технических системах'],
+            'responses': [f"{direction('27.03.04')}"]
+        },
+        '11.03.01': {
+            'examples': ['Радиотехника'],
+            'responses': [f"{direction('11.03.01')}"]
+        },
+        '13.03.02': {
+            'examples': ['Электроэнергетика и электротехника'],
+            'responses': [f"{direction('13.03.02')}"]
+        },
+        '15.03.04': {
+            'examples': ['Автоматизация технологических процессов и производств'],
+            'responses': [f"{direction('15.03.04')}"]
+        },
+        '15.03.05': {
+            'examples': ['Конструкторско-технологическое обеспечение строительных производств'],
+            'responses': [f"{direction('15.03.05')}"]
+        },
+        '19.03.04': {
+            'examples': ['Технология продукции и организация общественного питания'],
+            'responses': [f"{direction('19.03.04')}"]
+        },
+        '20.03.01': {
+            'examples': ['Техносферная безопасность'],
+            'responses': [f"{direction('20.03.01')}"]
+        },
+        '23.03.03': {
+            'examples': ['Эксплуатация транспортно-технологических машин и комплексов'],
+            'responses': [f"{direction('23.03.03')}"]
+        },
+        '24.05.07': {
+            'examples': ['Самолето- и вертолетостроение'],
+            'responses': [f"{direction('24.05.07')}"]
+        },
+        '37.03.01': {
+            'examples': ['Психология'],
+            'responses': [f"{direction('37.03.01')}"]
+        },
+        '37.03.02': {
+            'examples': ['Конфликтология'],
+            'responses': [f"{direction('37.03.02')}"]
+        },
+        '38.03.01': {
+            'examples': ['Экономика'],
+            'responses': [f"{direction('38.03.01')}"]
+        },
+        '38.03.02': {
+            'examples': ['Менеджмент'],
+            'responses': [f"{direction('38.03.02')}"]
+        },
+        '39.03.01': {
+            'examples': ['Социология'],
+            'responses': [f"{direction('39.03.01')}"]
+        },
+        '39.03.02': {
+            'examples': ['Социальная работа'],
+            'responses': [f"{direction('39.03.02')}"]
+        },
+        '40.03.01': {
+            'examples': ['Юриспруденция'],
+            'responses': [f"{direction('40.03.01')}"]
+        },
+        '15.03.02': {
+            'examples': ['Технологические машины и оборудование'],
+            'responses': [f"{direction('15.03.02')}"]
+        },
+        '15.03.06': {
+            'examples': ['Мехатроника и робототехника'],
+            'responses': [f"{direction('15.03.06')}"]
+        },
+        '18.03.01': {
+            'examples': ['Химическая технология'],
+            'responses': [f"{direction('18.03.01')}"]
+        },
+        '22.03.01': {
+            'examples': ['Материаловедение и технологии материалов'],
+            'responses': [f"{direction('22.03.01')}"]
+        },
+        '28.03.02': {
+            'examples': ['Эксплуатация транспортно-технологических машин и комплексов'],
+            'responses': [f"{direction('28.03.02')}"]
+        },
+        '29.03.04': {
+            'examples': ['Технология художественной обработки материалов'],
+            'responses': [f"{direction('29.03.04')}"]
+        },
+        '11.03.02': {
+            'examples': ['Инфокоммуникационные технологии и системы связи'],
+            'responses': [f"{direction('11.03.02')}"]
+        },
+        '11.03.03': {
+            'examples': ['Конструирование и технология электронных средств'],
+            'responses': [f"{direction('11.03.03')}"]
+        },
+        '11.03.04': {
+            'examples': ['Электроника и наноэлектроника'],
+            'responses': [f"{direction('11.03.04')}"]
+        },
+        '28.03.01': {
+            'examples': ['Нанотехнологии и микросистемная техника'],
+            'responses': [f"{direction('28.03.01')}"]
+        },
+        '38.03.05': {
+            'examples': ['Бизнес-информатика'],
+            'responses': [f"{direction('38.03.05')}"]
+        },
+        '38.05.01': {
+            'examples': ['Экономическая безопасность'],
+            'responses': [f"{direction('38.05.01')}"]
+        },
+        '41.03.01': {
+            'examples': ['Зарубежное регионоведение'],
+            'responses': [f"{direction('41.03.01')}"]
+        },
+        '42.03.01': {
+            'examples': ['Реклама и связи с общественностью'],
+            'responses': [f"{direction('42.03.01')}"]
+        },
+        '45.03.01': {
+            'examples': ['Филология'],
+            'responses': [f"{direction('45.03.01')}"]
+        },
+        '45.03.02': {
+            'examples': ['Лингвистика'],
+            'responses': [f"{direction('45.03.02')}"]
+        },
+        '05.03.06': {
+            'examples': ['Экология и природопользование'],
+            'responses': [f"{direction('05.03.06')}"]
+        },
+        '15.03.03': {
+            'examples': ['Прикладная механика'],
+            'responses': [f"{direction('15.03.03')}"]
+        },
+        '16.03.01': {
+            'examples': ['Техническая физика'],
+            'responses': [f"{direction('16.03.01')}"]
+        },
+        '17.05.01': {
+            'examples': ['Боеприпасы и взрыватели'],
+            'responses': [f"{direction('17.05.01')}"]
+        },
+        '24.03.03': {
+            'examples': ['Баллистика и гидроаэродинамика'],
+            'responses': [f"{direction('24.03.03')}"]
+        },
+        '24.03.04': {
+            'examples': ['Авиастроение'],
+            'responses': [f"{direction('24.03.04')}"]
+        },
+        '25.03.01': {
+            'examples': ['Техническая эксплуатация летательных аппаратов и двигателей'],
+            'responses': [f"{direction('25.03.01')}"]
+        },
+        '01.03.02': {
+            'examples': ['Прикладная математика и информатика'],
+            'responses': [f"{direction('01.03.02')}"]
+        },
+        '02.03.03': {
+            'examples': ['Математическое обеспечение и администрирование информационных систем'],
+            'responses': [f"{direction('02.03.03')}"]
+        },
+        '03.03.02': {
+            'examples': ['Физика'],
+            'responses': [f"{direction('03.03.02')}"]
+        },
+        '12.03.03': {
+            'examples': ['Фотоника и оптоинформатика'],
+            'responses': [f"{direction('12.03.03')}"]
+        },
+        '12.03.05': {
+            'examples': ['Лазерная техника и лазерные технологии'],
+            'responses': [f"{direction('12.03.05')}"]
+        },
+        '55.05.03': {
+            'examples': ['Кинооператорство'],
+            'responses': [f"{direction('55.05.03')}"]
+        },
+        '13.03.01': {
+            'examples': ['Теплоэнергетика и теплотехника'],
+            'responses': [f"{direction('13.03.01')}"]
+        },
+        '14.03.01': {
+            'examples': ['Ядерная энергетика и теплофизика'],
+            'responses': [f"{direction('14.03.01')}"]
+        },
         'rules': {
             'examples': ['Правила приёма'],
             'responses': [
@@ -213,7 +450,6 @@ BOT_CONFIG = {
             "save_variable": 'firstQuestion',
         },
         'secondQuestion': {
-            'examples': ['1', 'Тест'],
             'responses': [
                 'Какую работу вы предпочтёте? 1. Помогать больным людям. 2. Составлять таблицы, схемы, программы вычислительных машин.'],
             'next_step': 'thirdQuestion',
@@ -487,10 +723,9 @@ def bot(replica):
 
 
 app = Flask(__name__)
-# CORS(app, resources={r"/api/*": {"origins": "*"}})
 cors = CORS(app)
 app.config['Access-Control-Allow-Origin'] = '*'
-# app.run(host="0.0.0.0")
+
 
 @app.route('/api/messages', methods=['POST'])
 @cross_origin()
