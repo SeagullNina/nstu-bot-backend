@@ -489,7 +489,8 @@ def bot(replica):
 app = Flask(__name__)
 # CORS(app, resources={r"/api/*": {"origins": "*"}})
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['Access-Control-Allow-Origin'] = '*'
+app.run(host="0.0.0.0")
 
 @app.route('/api/messages', methods=['POST'])
 @cross_origin()
