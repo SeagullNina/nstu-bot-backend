@@ -490,7 +490,7 @@ app = Flask(__name__)
 # CORS(app, resources={r"/api/*": {"origins": "*"}})
 cors = CORS(app)
 app.config['Access-Control-Allow-Origin'] = '*'
-app.run(host="0.0.0.0")
+# app.run(host="0.0.0.0")
 
 @app.route('/api/messages', methods=['POST'])
 @cross_origin()
