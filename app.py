@@ -21,9 +21,8 @@ nstu_data_json = json.loads(nstu_data)
 
 def find_profile(search_profile):
     for direction in nstu_data_json:
-        for profile in direction['prof_list']:
-            if profile['SPEC'] == search_profile:
-                return direction['B_MEST']
+        if direction['SPEC_NAME'] == search_profile:
+            return direction['B_MEST']
 
 
 def all_faculties():
@@ -44,9 +43,8 @@ def all_directions():
     i = 1;
     result = ""
     for data in nstu_data_json:
-        for profile in data['prof_list']:
-            result += str(i) + '.' + str(profile['SPEC']) + ';' + '\n'
-            i += 1
+        result += str(i) + '.' + str(data['SPEC_NAME']) + ';' + '\n'
+        i += 1
     return result
 
 
@@ -89,11 +87,16 @@ def direction(dir):
         if data['OKSO_KEY'] == dir:
             res += 'Направление: ' + str(data['OKSO_KEY']) + " " + str(data['SPEC_NAME']) + '.'
             res += ' Факультет: ' + str(data['FACULTET']) + '.'
-            res += ' Форма обучения: ' + str((data['TRAINING_FORM']).split(',')) + '.'
+            res += ' Профили: '
+            for profile in data['prof_list']:
+                res += profile['SPEC'] + ','
+            res += ' форма обучения: ' + str((data['TRAINING_FORM']).split(',')).replace("['", "").replace("']", "") + '.'
             res += ' Количество бюджетных мест: ' + str(data['B_MEST']) + '.'
             res += ' Количество контрактных мест: ' + str(data['K_MEST']) + '.'
-            res += ' Проходной балл 2020 на бюджет: ' + str(data['MIN_B']) + '.'
-            res += ' Проходной балл 2020 на контракт: ' + str(data['MIN_K']) + '.'
+            if data['MIN_B']:
+                res += ' Проходной балл 2020 на бюджет: ' + str(data['MIN_B']) + '.'
+            if data['MIN_K']:
+                res += ' Проходной балл 2020 на контракт: ' + str(data['MIN_K']) + '.'
             if len(data['discs']) == 4:
                 res += 'Экзамены: ' + str(data['discs'][0]['NAME']) + ', ' + str(data['discs'][1]['NAME']) + ', ' + str(data['discs'][2]['NAME']) + ' ИЛИ ' + str(data['discs'][3]['NAME'])
             else:
@@ -437,6 +440,10 @@ BOT_CONFIG = {
             'responses': [
                 "С подробными правилами приёма в наш вуз вы можете ознакомиться по следующей ссылке: https://www.nstu.ru/entrance/committee/rules"]
         },
+        'minBalls': {
+            'examples': ['Минимальные баллы'],
+            'responses': ['На 2021 год при поступлении на обучение по направлениям подготовки бакалавриата и специалитета приемной комиссией НГТУ установлено следующее минимальное количество баллов по каждому предмету вступительных испытаний (из 100 возможных баллов): Русский язык: 40; Математика: 39; Информатика и ИКТ: 44; Физика: 39; Химия: 39; Биология: 39; География: 40; Обществознание: 45; Литература: 40; История: 35; Иностранный язык: 30']
+        },
         'courses': {
             'examples': ['Подготовительные курсы', 'Подготовиться к ЕГЭ'],
             'responses': [
@@ -713,9 +720,9 @@ def bot(replica):
             return answer
 
     # генеративная модель
-    answer = generate_answer(replica)
-    if answer:
-        return answer
+    #answer = generate_answer(replica)
+    #if answer:
+       #return answer
 
     # заглушка
     answer = get_stub()
